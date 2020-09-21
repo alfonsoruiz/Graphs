@@ -100,7 +100,25 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+
+        q = Queue()
+        visited_vertices = set()
+        path = [starting_vertex]
+        q.enqueue(path)
+
+        while q.size() > 0:
+            current_path = q.dequeue()
+
+            current_vertex = current_path[-1]
+
+            if current_vertex == destination_vertex:
+                return current_path
+
+            if current_vertex not in visited_vertices:
+                visited_vertices.add(current_vertex)
+
+            for neighbor in self.get_neighbors(current_vertex):
+                q.enqueue(current_path + [neighbor])
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -108,7 +126,7 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        # Stack for visited verts
+        # Stack for visited path
         s = Stack()
         # Set to track visited verts
         visited_vertices = set()
