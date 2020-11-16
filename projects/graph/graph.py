@@ -95,26 +95,25 @@ class Graph:
                 for neighbor in self.get_neighbors(current_node):
                     s.push(neighbor)
 
-    def dft_recursive(self, starting_vertex, visited=set()):
+    def dft_recursive(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
-
-        **** If we don't pass set into the recursive call It will initialize a new empty set everytime
-            therfore a node will never be marked visited and cause infinite recursion?
-
-        **** There is not current node to track because because recursion adds calls to the stack
         """
 
-        # if vertex is in visited, graph has been traversed
-        if starting_vertex not in visited:
-            visited.add(starting_vertex)
-            print(starting_vertex)
-            # Call dft for every neighbor in graph and pass in set of visited nodes
-            for neighbor in self.get_neighbors(starting_vertex):
-                self.dft_recursive(neighbor, visited)
+        visited = set()
+        self.dft_recursive_helper(starting_vertex, visited)
+
+    def dft_recursive_helper(self, current_vertex, visited):
+        visited.add(current_vertex)
+        print(current_vertex)
+
+        for neighbor in self.get_neighbors(current_vertex):
+            if neighbor not in visited:
+                # Recursive case
+                self.dft_recursive_helper(neighbor, visited)
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -170,7 +169,7 @@ class Graph:
                     new_path.append(neighbor)
                     s.push(new_path)
 
-    def dfs_recursive(self, starting_vertex, destination_vertex, visited=set(), path=[]):
+    def dfs_recursive(self, starting_vertex, destination_vertex):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -178,24 +177,32 @@ class Graph:
 
         This should be done using recursion.
         """
-        # If path list is empty add starting node
-        if len(path) == 0:
-            path.append(starting_vertex)
+        visited = set()
+        return self.dfs_recursive_helper([starting_vertex], visited, destination_vertex)
 
-        # If starting node is search node return path
-        if starting_vertex == destination_vertex:
-            return path
+    # Return path to destination vertex or empty list
+    def dfs_recursive_helper(self, current_path, visited, destination_vertex):
+        current_vertex = current_path[-1]
 
-        # classify starting node as visited
-        visited.add(starting_vertex)
+        # Base case
+        if current_vertex == destination_vertex:
+            return current_path
 
-        for neighbor in self.get_neighbors(starting_vertex):
+        visited.add(current_vertex)
+
+        for neighbor in self.get_neighbors(current_vertex):
             if neighbor not in visited:
-                result = self.dfs_recursive(
-                    neighbor, destination_vertex, visited, path + [neighbor])
+                new_path = list(current_path)
+                new_path.append(neighbor)
+                # Recursive case -> Keep traversing graph and visit neighbors
+                result = self.dfs_recursive_helper(
+                    new_path, visited, destination_vertex)
 
-                if result is not None:
+                if len(result) > 0:
                     return result
+
+        # Alternate base case if destination vertex is not found
+        return []
 
 
 if __name__ == '__main__':
