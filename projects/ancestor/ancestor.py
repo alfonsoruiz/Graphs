@@ -1,6 +1,24 @@
 from collections import deque
 from collections import defaultdict
 
+'''
+Understand:
+Build a graph representing ancestor relationships
+
+Plan:
+1. Translate problem into graph terminology
+    Vertex - users
+    Edges - parent child releationship between two users
+    Weights - none
+    Paths - users family tree
+
+2. Build graph (if needed)
+    Build graph based on edges given, each user has a directed edge to ancestor/parent
+
+3. Traverse graph
+    Traverse all paths from starting node, keep track of furthest node found with lowest user id
+'''
+
 
 def earliest_ancestor(ancestors, starting_node):
     graph = createGraph(ancestors)
@@ -35,6 +53,7 @@ def createGraph(edges):
 
     for edge in edges:
         ancestor, child = edge[0], edge[1]
+        # Note: Children are the nodes and ancestors are connections
         graph[child].add(ancestor)
 
     return graph
